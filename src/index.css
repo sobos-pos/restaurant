@@ -1,0 +1,18 @@
+@import 'tailwindcss';
+
+/*
+ * Tokens only. Every style lives in utility classes in the components.
+ * Palette: a hand-painted darshini signboard (yellow board, leaf-green
+ * lettering, chilli-red pinstripe) against steel-tumbler grey.
+ */
+@theme {
+  --color-board: #f2c230;
+  --color-leaf: #1e5b3a;
+  --color-ink: #123522;
+  --color-steel: #e6e9eb;
+  --color-steel-line: #b7bec3;
+  --color-chilli: #b3261e;
+
+  --font-display: 'Yatra One', Georgia, serif;
+  --font-body: 'Hind', system-ui, sans-serif;
+}
