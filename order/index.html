@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex" />
+    <title>Order at your table · Malli Tiffin House</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Hind:wght@400;600&family=Yatra+One&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body class="bg-steel font-body text-ink antialiased">
+    <!--
+      Table scans land here as /order/?t=<table code> (the sticker's redirect
+      sends them). The SOBOS script reads the code, takes it off the address bar
+      and opens the menu in the box below. Opened without a code, the box shows
+      the guest's table if they scanned one earlier, or asks them to scan.
+    -->
+    <header class="border-b border-steel-line">
+      <div class="mx-auto flex max-w-5xl items-center justify-between gap-4 px-4 py-3 sm:px-8">
+        <a
+          href="/"
+          class="font-display text-xl text-leaf focus-visible:outline-3 focus-visible:outline-offset-3 focus-visible:outline-chilli"
+          >Malli Tiffin House</a
+        >
+        <span class="text-base text-ink/70">Ordering at your table</span>
+      </div>
+    </header>
+    <main class="mx-auto max-w-5xl">
+      <div id="sobos-order">
+        <p class="px-4 py-10 text-lg sm:px-8">
+          Scan the QR code on your table to see the menu and order from your phone.
+        </p>
+      </div>
+    </main>
+    <script type="module" src="/src/order.ts"></script>
+    <script
+      src="%VITE_SOBOS_ORDER_URL%/v1/sobos-embed.js"
+      data-outlet="%VITE_SOBOS_LOCATION_ID%"
+      data-title="Malli Tiffin House menu and ordering"
+      async
+    ></script>
+  </body>
+</html>

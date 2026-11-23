@@ -1,5 +1,4 @@
 import { dishes, hours, hoursNote, restaurant } from './content';
-import { orderUrl } from './order-link';
 
 const FOCUS =
   'focus-visible:outline-3 focus-visible:outline-offset-3 focus-visible:outline-chilli';
@@ -9,25 +8,16 @@ const BUTTON = {
   size: { md: 'px-5 py-3 text-lg', sm: 'px-4 py-2 text-base' },
 };
 
+/**
+ * Dine-in ordering lives on this site's own /order/ page, which hosts the SOBOS
+ * embed. A guest who scanned their table earlier lands back on it; anyone else
+ * is asked to scan the code on their table.
+ */
 function OrderNow({ size = 'md' }: { size?: 'md' | 'sm' }) {
-  const classes = `${BUTTON.base} ${BUTTON.size[size]}`;
-
-  if (orderUrl === null) {
-    return (
-      <span
-        aria-disabled="true"
-        title="The ordering link is not configured for this site."
-        className={`${classes} cursor-not-allowed bg-steel-line text-ink/70`}
-      >
-        Order Now
-      </span>
-    );
-  }
-
   return (
     <a
-      href={orderUrl}
-      className={`${classes} bg-leaf text-board shadow-[0_3px_0_var(--color-ink)] transition-transform hover:-translate-y-px active:translate-y-0.5 active:shadow-none motion-reduce:transition-none`}
+      href="/order/"
+      className={`${BUTTON.base} ${BUTTON.size[size]} bg-leaf text-board shadow-[0_3px_0_var(--color-ink)] transition-transform hover:-translate-y-px active:translate-y-0.5 active:shadow-none motion-reduce:transition-none`}
     >
       Order Now
     </a>
@@ -66,7 +56,7 @@ function Signboard() {
           <p className="mt-6 max-w-[34rem] text-xl leading-relaxed text-ink">{restaurant.intro}</p>
           <div className="mt-8 flex flex-wrap items-center gap-x-5 gap-y-3">
             <OrderNow />
-            <span className="text-base text-ink">Order for pickup. Pay online, collect at the counter.</span>
+            <span className="text-base text-ink">At a table? Scan its QR code and order from your phone.</span>
           </div>
         </div>
       </div>
@@ -95,30 +85,30 @@ function Dishes() {
   );
 }
 
+const ORDER_STEPS = [
+  'Scan the QR code on your table. The menu opens on this website.',
+  'Your server confirms your table once, with a code on their phone.',
+  'Order as many rounds as you like. Pay at the end, at the table or the counter.',
+];
+
 function HowToOrder() {
   return (
     <section aria-labelledby="ordering" className="mx-auto max-w-5xl px-4 pt-16 sm:px-8 sm:pt-24">
       <h2 id="ordering" className="font-display text-4xl text-leaf sm:text-5xl">
-        Ordering
+        Ordering at your table
       </h2>
-      <div className="mt-8 grid gap-10 sm:grid-cols-2">
-        <div>
-          <h3 className="text-xl font-semibold text-ink">Sitting at a table</h3>
-          <p className="mt-2 max-w-[32rem] text-lg leading-relaxed text-ink/80">
-            Scan the QR code on your table to open the menu on your phone. Your server confirms the
-            table once, and then you can order as many rounds as you like. Pay when you leave.
-          </p>
-        </div>
-        <div>
-          <h3 className="text-xl font-semibold text-ink">Picking up</h3>
-          <p className="mt-2 max-w-[32rem] text-lg leading-relaxed text-ink/80">
-            Order Now opens our take-away menu. Pay online, keep the token number you get, and
-            collect your order at the counter when it is called.
-          </p>
-          <div className="mt-5">
-            <OrderNow />
-          </div>
-        </div>
+      <ol className="mt-8 grid max-w-[40rem] gap-5">
+        {ORDER_STEPS.map((step, index) => (
+          <li key={step} className="flex gap-4 text-lg leading-relaxed text-ink/80">
+            <span aria-hidden="true" className="font-display text-2xl leading-none text-leaf">
+              {index + 1}
+            </span>
+            <span>{step}</span>
+          </li>
+        ))}
+      </ol>
+      <div className="mt-8">
+        <OrderNow />
       </div>
     </section>
   );

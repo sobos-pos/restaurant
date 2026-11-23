@@ -1,11 +1,16 @@
+import { fileURLToPath } from 'node:url';
+
 import tailwindcss from '@tailwindcss/vite';
 import react from '@vitejs/plugin-react';
 import { defineConfig, loadEnv } from 'vite';
 
 /**
- * A production build without the ordering link would ship a site whose one
- * job (Order Now) does nothing. Fail the build instead of the visitor.
- * `vite dev` still starts without it and shows the button as unavailable.
+ * Two pages: the showcase (`/`) and the dine-in ordering page (`/order/`),
+ * which hosts the SOBOS embed script.
+ *
+ * A production build without the SOBOS values would ship an ordering page that
+ * shows nothing. Fail the build instead of the guest. `vite dev` still starts
+ * without them; the order page then just asks the guest to scan.
  */
 export default defineConfig(({ command, mode }) => {
   if (command === 'build') {
@@ -18,5 +23,15 @@ export default defineConfig(({ command, mode }) => {
     }
   }
 
-  return { plugins: [react(), tailwindcss()] };
+  return {
+    plugins: [react(), tailwindcss()],
+    build: {
+      rolldownOptions: {
+        input: {
+          main: fileURLToPath(new URL('./index.html', import.meta.url)),
+          order: fileURLToPath(new URL('./order/index.html', import.meta.url)),
+        },
+      },
+    },
+  };
 });

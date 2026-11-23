@@ -1,6 +1,6 @@
 # Restaurant showcase site
 
-A one-page restaurant website (React 19 + Vite 8 + Tailwind 4) whose **Order Now** button sends the guest to SOBOS guest ordering.
+A restaurant website (React 19 + Vite 8 + Tailwind 4) with **dine-in ordering built in**: guests scan their table's QR code and order inside this site, through SOBOS.
 
 ## Run
 
@@ -11,17 +11,22 @@ npm run dev                  # or "restaurant-site" in the workspace .claude/lau
 npm run build                # refuses to build without both VITE_SOBOS_* values
 ```
 
-## How it connects to SOBOS
+## Pages
 
-| On this site | Goes to | What the guest gets |
-|---|---|---|
-| Order Now | `<VITE_SOBOS_ORDER_URL>/?l=<VITE_SOBOS_LOCATION_ID>` | The outlet's counter / take-away menu: browse, prepay, token number, pickup |
-| (nothing) | Table QR stickers print `https://qr.soboss.in/t/<qr_token>`, which redirects to `https://order.soboss.in/?t=<qr_token>` | Dine-in at that table, with waiter pairing |
+| Path | What it is |
+|---|---|
+| `/` | The showcase: signboard, dishes, how ordering works, visit details. **Order Now** goes to `/order/`. |
+| `/order/` | Hosts the SOBOS embed (`order/index.html`). A table scan lands here as `/order/?t=<table code>`. |
 
-- Order Now is an ordinary link in the same tab. The guest app is **not** iframed: final_prd `edge.md` §6 sends `frame-ancestors 'none'`, so browsers refuse to embed it.
-- The location id is public (the same id a counter QR carries), so it is fine in the site bundle.
-- The counter channel must be enabled for the outlet (`Enabled channels` → `counter_takeaway`), otherwise the guest app gets `409 channel_not_enabled`.
+## How a guest gets here
+
+1. The table sticker is SOBOS's own `https://qr.sobos.in/t/<code>`; it never changes.
+2. In the SOBOS dashboard (**Tables & Floor → Website**) the owner adds `https://<this site>/order/`, publishes the DNS TXT record it shows, presses **Verify**, then **Send table scans here**.
+3. From then on a scan opens `/order/?t=<code>` here. The embed script takes the code off the address bar and opens the menu in a frame filling the screen. Pairing with the waiter, rounds and the bill work exactly as on SOBOS.
+4. Turning it off in the dashboard sends the next scan straight to SOBOS. No reprint either way.
+
+The frame only renders on a domain the outlet has verified (SOBOS sends `frame-ancestors` per outlet). If it does not come up within 12 s, the page offers "Open ordering in a new tab". Spec: `final_prd/qr_ordering/embed.md` in the backend repo.
 
 ## Editing content
 
-All restaurant text is in `src/content.ts`. It has no prices or stock on purpose: those come live from the SOBOS menu on the ordering page. The address and phone are placeholders (marked TODO).
+All restaurant text for `/` is in `src/content.ts`; the order page's header is in `order/index.html`. Neither has prices or stock: those come live from the SOBOS menu. The address and phone are placeholders (marked TODO).
