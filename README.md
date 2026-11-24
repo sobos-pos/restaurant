@@ -8,7 +8,7 @@ A restaurant website (React 19 + Vite 8 + Tailwind 4) with **dine-in ordering bu
 npm install
 cp .env.example .env.local   # then fill in VITE_SOBOS_LOCATION_ID
 npm run dev                  # or "restaurant-site" in the workspace .claude/launch.json (port 5180)
-npm run build                # refuses to build without both VITE_SOBOS_* values
+npm run build                # without VITE_SOBOS_LOCATION_ID the build passes but /order/ has no embed
 ```
 
 ## Pages
